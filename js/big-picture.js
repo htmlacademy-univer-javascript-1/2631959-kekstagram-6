@@ -26,11 +26,11 @@ const onEscKeyDown = (evt) => {
   }
 };
 
-const closeBigPicture = () => {
+function closeBigPicture() {
   bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onEscKeyDown);
-};
+}
 
 const openBigPicture = (photo) => {
   bigPicture.classList.remove('hidden');
