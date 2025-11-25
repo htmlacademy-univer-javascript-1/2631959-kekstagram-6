@@ -22,6 +22,18 @@ const renderComments = (comments) => {
   socialComments.innerHTML = comments.map(createComment).join('');
 };
 
+const onEscKeyDown = (evt) => {
+  if (evt.key === 'Escape') {
+    closeBigPicture();
+  }
+};
+
+const closeBigPicture = () => {
+  bigPicture.classList.add('hidden');
+  body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onEscKeyDown);
+};
+
 const openBigPicture = (photo) => {
   bigPicture.classList.remove('hidden');
   body.classList.add('modal-open');
@@ -37,19 +49,6 @@ const openBigPicture = (photo) => {
   renderComments(photo.comments);
 
   document.addEventListener('keydown', onEscKeyDown);
-};
-
-const closeBigPicture = () => {
-  bigPicture.classList.add('hidden');
-  body.classList.remove('modal-open');
-
-  document.removeEventListener('keydown', onEscKeyDown);
-};
-
-const onEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
-    closeBigPicture();
-  }
 };
 
 closeButton.addEventListener('click', closeBigPicture);
