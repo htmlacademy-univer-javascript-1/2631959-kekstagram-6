@@ -20,16 +20,16 @@ const renderComments = (comments) => {
   socialComments.innerHTML = comments.map(createComment).join('');
 };
 
-function closeBigPicture() {
-  bigPicture.classList.add('hidden');
-  body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onEscKeyDown);
-}
-
 const onEscKeyDown = (evt) => {
   if (evt.key === 'Escape') {
     closeBigPicture();
   }
+};
+
+const closeBigPicture = () => {
+  bigPicture.classList.add('hidden');
+  body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onEscKeyDown);
 };
 
 const openBigPicture = (photo) => {
