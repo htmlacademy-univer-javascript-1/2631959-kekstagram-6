@@ -9,29 +9,27 @@ const commentsLoader = bigPicture.querySelector('.comments-loader');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
 const body = document.body;
 
-const createComment = (comment) => {
-  return `
+const createComment = (comment) => `
     <li class="social__comment">
       <img class="social__picture" src="${comment.avatar}" alt="${comment.name}" width="35" height="35">
       <p class="social__text">${comment.message}</p>
     </li>
   `;
-};
 
 const renderComments = (comments) => {
   socialComments.innerHTML = comments.map(createComment).join('');
-};
-
-const onEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
-    closeBigPicture();
-  }
 };
 
 const closeBigPicture = () => {
   bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onEscKeyDown);
+};
+
+const onEscKeyDown = (evt) => {
+  if (evt.key === 'Escape') {
+    closeBigPicture();
+  }
 };
 
 const openBigPicture = (photo) => {
