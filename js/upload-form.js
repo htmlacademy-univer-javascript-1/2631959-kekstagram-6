@@ -9,6 +9,17 @@ const body = document.body;
 const hashtagInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
 
+const onDocumentKeydown = (evt) => {
+  if (isKeyEscape(evt.key)) {
+    const activeElement = document.activeElement;
+    if (activeElement === hashtagInput || activeElement === commentInput) {
+      evt.stopPropagation();
+      return;
+    }
+    closeUploadForm();
+  }
+};
+
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
@@ -20,17 +31,6 @@ const closeUploadForm = () => {
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   uploadForm.reset();
-};
-
-const onDocumentKeydown = (evt) => {
-  if (isKeyEscape(evt.key)) {
-    const activeElement = document.activeElement;
-    if (activeElement === hashtagInput || activeElement === commentInput) {
-      evt.stopPropagation();
-      return;
-    }
-    closeUploadForm();
-  }
 };
 
 uploadInput.addEventListener('change', openUploadForm);

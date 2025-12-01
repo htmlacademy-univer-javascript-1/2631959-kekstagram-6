@@ -78,7 +78,6 @@ uploadForm.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
 
   if (isValid) {
-    console.log('Форма валидна, отправка...');
     closeUploadForm();
     pristine.reset();
   }
