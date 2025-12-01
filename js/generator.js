@@ -1,14 +1,12 @@
 import { MESSAGES, NAMES } from './const.js';
 import { getRandomNumber, getRandomElement } from './utils.js';
 
-const createComment = (id) => {
-  return {
-    id: id,
-    avatar: `img/avatar-${getRandomNumber(1, 6)}.svg`,
-    message: getRandomElement(MESSAGES),
-    name: getRandomElement(NAMES)
-  };
-};
+const createComment = (id) => ({
+  id: id,
+  avatar: `img/avatar-${getRandomNumber(1, 6)}.svg`,
+  message: getRandomElement(MESSAGES),
+  name: getRandomElement(NAMES)
+});
 
 const createComments = () => {
   const commentsCount = getRandomNumber(0, 30);
@@ -21,14 +19,12 @@ const createComments = () => {
   return comments;
 };
 
-const createPhoto = (id) => {
-  return {
-    id: id,
-    url: `photos/${id}.jpg`,
-    description: `Описание фотографии номер ${id}`,
-    likes: getRandomNumber(15, 200),
-    comments: createComments()
-  };
-};
+const createPhoto = (id) => ({
+  id: id,
+  url: `photos/${id}.jpg`,
+  description: `Описание фотографии номер ${id}`,
+  likes: getRandomNumber(15, 200),
+  comments: createComments()
+});
 
 export { createPhoto };
