@@ -9,6 +9,9 @@ const commentsLoader = bigPicture.querySelector('.comments-loader');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
 const body = document.body;
 
+let commentsShown = 0;
+const COMMENTS_PER_LOAD = 5;
+
 const createComment = (comment) => `
     <li class="social__comment">
       <img class="social__picture" src="${comment.avatar}" alt="${comment.name}" width="35" height="35">
@@ -16,8 +19,21 @@ const createComment = (comment) => `
     </li>
   `;
 
-const renderComments = (comments) => {
-  socialComments.innerHTML = comments.map(createComment).join('');
+const renderCommentsBatch = (comments, start, count) => {
+  const end = Math.min(start + count, comments.length);
+  const commentsHTML = comments
+    .slice(start, end)
+    .map(createComment)
+    .join('');
+
+  socialComments.insertAdjacentHTML('beforeend', commentsHTML);
+  commentsShown = end;
+  commentCount.textContent = `${commentsShown} из ${comments.length} комментариев`;
+  if (commentsShown >= comments.length) {
+    commentsLoader.classList.add('hidden');
+  } else {
+    commentsLoader.classList.remove('hidden');
+  }
 };
 
 const onEscKeyDown = (evt) => {
@@ -35,8 +51,6 @@ function closeBigPicture() {
 const openBigPicture = (photo) => {
   bigPicture.classList.remove('hidden');
   body.classList.add('modal-open');
-  commentCount.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
 
   bigPictureImg.src = photo.url;
   bigPictureImg.alt = photo.description;
@@ -44,7 +58,12 @@ const openBigPicture = (photo) => {
   commentsCount.textContent = photo.comments.length;
   socialCaption.textContent = photo.description;
 
-  renderComments(photo.comments);
+  socialComments.innerHTML = '';
+  commentsShown = 0;
+  renderCommentsBatch(photo.comments, 0, COMMENTS_PER_LOAD);
+  commentsLoader.onclick = () => {
+    renderCommentsBatch(photo.comments, commentsShown, COMMENTS_PER_LOAD);
+  };
 
   document.addEventListener('keydown', onEscKeyDown);
 };
