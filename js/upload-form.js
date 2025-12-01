@@ -1,4 +1,6 @@
 import { isKeyEscape } from './utils.js';
+import { resetScale } from './image-scale.js';
+import { resetEffect } from './image-effects.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
@@ -25,6 +27,8 @@ function closeUploadForm() {
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   uploadForm.reset();
+  resetScale();
+  resetEffect();
 }
 
 const openUploadForm = () => {
