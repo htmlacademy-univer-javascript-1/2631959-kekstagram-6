@@ -9,7 +9,7 @@ const body = document.body;
 const hashtagInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
 
-const onDocumentKeydown = (evt) => {
+function onDocumentKeydown(evt) {
   if (isKeyEscape(evt.key)) {
     const activeElement = document.activeElement;
     if (activeElement === hashtagInput || activeElement === commentInput) {
@@ -18,19 +18,19 @@ const onDocumentKeydown = (evt) => {
     }
     closeUploadForm();
   }
-};
+}
+
+function closeUploadForm() {
+  uploadOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
+  uploadForm.reset();
+}
 
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
-};
-
-const closeUploadForm = () => {
-  uploadOverlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
-  uploadForm.reset();
 };
 
 uploadInput.addEventListener('change', openUploadForm);
