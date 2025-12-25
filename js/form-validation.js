@@ -1,4 +1,6 @@
 import { uploadForm, hashtagInput, commentInput, closeUploadForm } from './upload-form.js';
+import { sendData } from './api.js';
+import { showSuccessMessage, showErrorMessage } from './message.js';
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -7,9 +9,15 @@ const pristine = new Pristine(uploadForm, {
 });
 
 const MAX_HASHTAGS = 5;
-const MAX_HASHTAG_LENGTH = 20;
 const MAX_COMMENT_LENGTH = 140;
-const HASHTAG_REGEX = new RegExp(`^#[a-zа-яё0-9]{1,${MAX_HASHTAG_LENGTH - 1}}$`, 'i');
+const HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикую...'
+};
+
+const submitButton = uploadForm.querySelector('.img-upload__submit');
 
 const parseHashtags = (value) => {
   if (!value.trim()) {
@@ -22,7 +30,6 @@ const validateHashtagFormat = (value) => {
   if (!value.trim()) {
     return true;
   }
-
   const hashtags = parseHashtags(value);
   return hashtags.every((tag) => HASHTAG_REGEX.test(tag));
 };
@@ -31,7 +38,6 @@ const validateHashtagCount = (value) => {
   if (!value.trim()) {
     return true;
   }
-
   const hashtags = parseHashtags(value);
   return hashtags.length <= MAX_HASHTAGS;
 };
@@ -40,7 +46,6 @@ const validateHashtagUnique = (value) => {
   if (!value.trim()) {
     return true;
   }
-
   const hashtags = parseHashtags(value);
   const uniqueHashtags = new Set(hashtags);
   return hashtags.length === uniqueHashtags.size;
@@ -72,13 +77,35 @@ pristine.addValidator(
   `Комментарий не может быть длиннее ${MAX_COMMENT_LENGTH} символов`
 );
 
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
+};
+
 uploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();
 
   if (isValid) {
-    closeUploadForm();
-    pristine.reset();
+    blockSubmitButton();
+    const formData = new FormData(uploadForm);
+
+    sendData(formData)
+      .then(() => {
+        closeUploadForm();
+        showSuccessMessage();
+      })
+      .catch(() => {
+        showErrorMessage();
+      })
+      .finally(() => {
+        unblockSubmitButton();
+      });
   }
 });
