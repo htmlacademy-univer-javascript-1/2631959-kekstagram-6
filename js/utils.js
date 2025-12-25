@@ -2,4 +2,10 @@ export const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - m
 
 export const getRandomElement = (array) => array[getRandomNumber(0, array.length - 1)];
 
-export const isKeyEscape = (key) => key === 'Escape';
+export const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
