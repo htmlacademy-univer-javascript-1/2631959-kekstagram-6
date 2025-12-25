@@ -1,10 +1,17 @@
 import { openBigPicture } from './big-picture.js';
 import { getData } from './api.js';
+import { initFilters } from './filters.js';
 
 const template = document.querySelector('#picture').content;
 const container = document.querySelector('.pictures');
 
+const clearPictures = () => {
+  container.querySelectorAll('.picture').forEach((picture) => picture.remove());
+};
+
 const renderPictures = (photos) => {
+  clearPictures();
+
   photos.forEach((photo) => {
     const element = template.cloneNode(true);
     const pictureLink = element.querySelector('.picture');
@@ -53,10 +60,11 @@ const loadPhotos = () => {
   getData()
     .then((photos) => {
       renderPictures(photos);
+      initFilters(photos);
     })
     .catch((err) => {
       showError(err.message);
     });
 };
 
-export { loadPhotos };
+export { loadPhotos, renderPictures };
