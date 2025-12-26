@@ -10,9 +10,32 @@ const body = document.body;
 
 const hashtagInput = uploadForm.querySelector('.text__hashtags');
 const commentInput = uploadForm.querySelector('.text__description');
+let keydownController = null;
 
-function onDocumentKeydown(evt) {
+const closeUploadForm = () => {
+  uploadOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  if (keydownController) {
+    keydownController.abort();
+    keydownController = null;
+  }
+  uploadForm.reset();
+  uploadInput.value = '';
+  hashtagInput.disabled = false;
+  commentInput.disabled = false;
+  hashtagInput.removeAttribute('disabled');
+  commentInput.removeAttribute('disabled');
+  resetScale();
+  resetEffect();
+  const errorElements = uploadForm.querySelectorAll('.pristine-error, .text__error');
+  errorElements.forEach((element) => element.remove());
+};
+
+const onDocumentKeydown = (evt) => {
   if (isKeyEscape(evt.key)) {
+    if (document.querySelector('.error, .success')) {
+      return;
+    }
     const activeElement = document.activeElement;
     if (activeElement === hashtagInput || activeElement === commentInput) {
       evt.stopPropagation();
@@ -20,24 +43,23 @@ function onDocumentKeydown(evt) {
     }
     closeUploadForm();
   }
-}
-
-function closeUploadForm() {
-  uploadOverlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
-  uploadForm.reset();
-  resetScale();
-  resetEffect();
-}
+};
 
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
-  document.addEventListener('keydown', onDocumentKeydown);
+  if (keydownController) {
+    keydownController.abort();
+  }
+  keydownController = new AbortController();
+  document.addEventListener('keydown', onDocumentKeydown, {signal: keydownController.signal});
+  hashtagInput.disabled = false;
+  commentInput.disabled = false;
+  hashtagInput.removeAttribute('disabled');
+  commentInput.removeAttribute('disabled');
+  resetScale();
 };
 
-uploadInput.addEventListener('change', openUploadForm);
 uploadCancel.addEventListener('click', closeUploadForm);
 
-export { uploadForm, hashtagInput, commentInput, closeUploadForm };
+export { uploadForm, hashtagInput, commentInput, closeUploadForm, openUploadForm };

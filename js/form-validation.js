@@ -87,6 +87,10 @@ const unblockSubmitButton = () => {
   submitButton.textContent = SubmitButtonText.IDLE;
 };
 
+const resetPristine = () => {
+  pristine.reset();
+};
+
 uploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
@@ -109,3 +113,5 @@ uploadForm.addEventListener('submit', (evt) => {
       });
   }
 });
+
+export { resetPristine };

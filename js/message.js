@@ -1,31 +1,37 @@
+import { isKeyEscape } from './utils.js';
+
 const successTemplate = document.querySelector('#success').content;
 const errorTemplate = document.querySelector('#error').content;
 const body = document.body;
-
-const isEscapeKey = (key) => key === 'Escape';
 
 const showMessage = (template, onClose) => {
   const messageElement = template.cloneNode(true);
   body.append(messageElement);
 
   const messageSection = document.querySelector('.success, .error');
+  messageSection.style.zIndex = '10000';
   const closeButton = messageSection.querySelector('button');
+  let keydownController = null;
 
   const closeMessage = () => {
     messageSection.remove();
-    document.removeEventListener('keydown', onDocumentKeydown);
+    if (keydownController) {
+      keydownController.abort();
+      keydownController = null;
+    }
 
     if (onClose) {
       onClose();
     }
   };
 
-  function onDocumentKeydown(evt) {
-    if (isEscapeKey(evt.key)) {
+  const onDocumentKeydown = (evt) => {
+    if (isKeyEscape(evt.key)) {
       evt.preventDefault();
+      evt.stopImmediatePropagation();
       closeMessage();
     }
-  }
+  };
 
   const onOverlayClick = (evt) => {
     if (evt.target === messageSection) {
@@ -35,7 +41,8 @@ const showMessage = (template, onClose) => {
 
   closeButton.addEventListener('click', closeMessage);
   messageSection.addEventListener('click', onOverlayClick);
-  document.addEventListener('keydown', onDocumentKeydown);
+  keydownController = new AbortController();
+  document.addEventListener('keydown', onDocumentKeydown, {signal: keydownController.signal});
 };
 
 const showSuccessMessage = (onClose) => {

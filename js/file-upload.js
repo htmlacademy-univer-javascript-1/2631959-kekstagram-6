@@ -1,3 +1,5 @@
+import { openUploadForm } from './upload-form.js';
+
 const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif'];
 
 const uploadInput = document.querySelector('.img-upload__input');
@@ -10,18 +12,12 @@ const isValidFileType = (file) => {
 };
 
 const loadImagePreview = (file) => {
-  const reader = new FileReader();
+  const imageUrl = URL.createObjectURL(file);
+  imagePreview.src = imageUrl;
 
-  reader.addEventListener('load', () => {
-    const imageUrl = reader.result;
-    imagePreview.src = imageUrl;
-
-    effectsPreviews.forEach((preview) => {
-      preview.style.backgroundImage = `url('${imageUrl}')`;
-    });
+  effectsPreviews.forEach((preview) => {
+    preview.style.backgroundImage = `url('${imageUrl}')`;
   });
-
-  reader.readAsDataURL(file);
 };
 
 const onFileInputChange = () => {
@@ -37,6 +33,7 @@ const onFileInputChange = () => {
   }
 
   loadImagePreview(file);
+  openUploadForm();
 };
 
 const initFileUpload = () => {

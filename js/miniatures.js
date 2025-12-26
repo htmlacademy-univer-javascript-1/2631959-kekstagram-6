@@ -35,25 +35,31 @@ const renderPictures = (photos) => {
 };
 
 const showError = (message) => {
+  const existingError = document.querySelector('.data-error');
+  if (existingError) {
+    existingError.remove();
+  }
+
   const errorElement = document.createElement('div');
+  errorElement.className = 'data-error';
   errorElement.style.cssText = `
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #ff4444;
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    font-size: 18px;
-    z-index: 1000;
+    left: 0;
+    top: 0;
+    right: 0;
+    padding: 12px 16px;
+    background: rgba(255, 68, 68, 0.95);
+    color: #ffffff;
+    font-size: 16px;
+    z-index: 10000;
+    text-align: center;
   `;
   errorElement.textContent = message;
   document.body.append(errorElement);
 
   setTimeout(() => {
     errorElement.remove();
-  }, 5000);
+  }, 10000);
 };
 
 const loadPhotos = () => {
