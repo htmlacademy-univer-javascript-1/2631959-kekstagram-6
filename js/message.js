@@ -1,14 +1,15 @@
+import { isKeyEscape } from './utils.js';
+
 const successTemplate = document.querySelector('#success').content;
 const errorTemplate = document.querySelector('#error').content;
 const body = document.body;
-
-const isEscapeKey = (key) => key === 'Escape';
 
 const showMessage = (template, onClose) => {
   const messageElement = template.cloneNode(true);
   body.append(messageElement);
 
   const messageSection = document.querySelector('.success, .error');
+  messageSection.style.zIndex = '10000';
   const closeButton = messageSection.querySelector('button');
 
   const closeMessage = () => {
@@ -21,8 +22,9 @@ const showMessage = (template, onClose) => {
   };
 
   function onDocumentKeydown(evt) {
-    if (isEscapeKey(evt.key)) {
+    if (isKeyEscape(evt.key)) {
       evt.preventDefault();
+      evt.stopImmediatePropagation();
       closeMessage();
     }
   }

@@ -40,16 +40,28 @@ const updatePhotos = debounce(() => {
 }, DEBOUNCE_DELAY);
 
 const onFilterClick = (evt) => {
-  if (!evt.target.classList.contains('img-filters__button')) {
+  let clickedButton = null;
+  const currentTarget = evt.currentTarget;
+
+  if (currentTarget && currentTarget.classList && currentTarget.classList.contains('img-filters__button')) {
+    clickedButton = currentTarget;
+  } else {
+    const targetElement = evt.target instanceof Element ? evt.target : evt.target.parentElement;
+    clickedButton = targetElement ? targetElement.closest('.img-filters__button') : null;
+  }
+
+  if (!clickedButton) {
     return;
   }
 
-  const clickedButton = evt.target;
   if (clickedButton.id === currentFilter) {
     return;
   }
 
-  filtersForm.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+  const activeButton = filtersForm.querySelector('.img-filters__button--active');
+  if (activeButton) {
+    activeButton.classList.remove('img-filters__button--active');
+  }
   clickedButton.classList.add('img-filters__button--active');
   currentFilter = clickedButton.id;
   updatePhotos();
@@ -58,7 +70,13 @@ const onFilterClick = (evt) => {
 const initFilters = (loadedPhotos) => {
   photos = loadedPhotos.slice();
   filtersContainer.classList.remove('img-filters--inactive');
-  filtersForm.addEventListener('click', onFilterClick);
 };
+
+if (filtersForm) {
+  filtersForm.addEventListener('click', onFilterClick);
+  filtersForm.querySelectorAll('.img-filters__button').forEach((button) => {
+    button.addEventListener('click', onFilterClick);
+  });
+}
 
 export { initFilters };

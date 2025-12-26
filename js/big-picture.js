@@ -1,10 +1,13 @@
+import { isKeyEscape } from './utils.js';
+
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImg = bigPicture.querySelector('.big-picture__img img');
 const likesCount = bigPicture.querySelector('.likes-count');
 const commentsCount = bigPicture.querySelector('.comments-count');
 const socialCaption = bigPicture.querySelector('.social__caption');
 const socialComments = bigPicture.querySelector('.social__comments');
-const commentCount = bigPicture.querySelector('.social__comment-count');
+const commentShownCount = bigPicture.querySelector('.social__comment-shown-count');
+const commentTotalCount = bigPicture.querySelector('.social__comment-total-count');
 const commentsLoader = bigPicture.querySelector('.comments-loader');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
 const body = document.body;
@@ -28,7 +31,8 @@ const renderCommentsBatch = (comments, start, count) => {
 
   socialComments.insertAdjacentHTML('beforeend', commentsHTML);
   commentsShown = end;
-  commentCount.textContent = `${commentsShown} из ${comments.length} комментариев`;
+  commentShownCount.textContent = commentsShown;
+  commentTotalCount.textContent = comments.length;
   if (commentsShown >= comments.length) {
     commentsLoader.classList.add('hidden');
   } else {
@@ -37,7 +41,7 @@ const renderCommentsBatch = (comments, start, count) => {
 };
 
 const onEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
+  if (isKeyEscape(evt.key)) {
     closeBigPicture();
   }
 };

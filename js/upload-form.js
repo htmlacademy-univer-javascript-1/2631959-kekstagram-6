@@ -13,6 +13,9 @@ const commentInput = uploadForm.querySelector('.text__description');
 
 function onDocumentKeydown(evt) {
   if (isKeyEscape(evt.key)) {
+    if (document.querySelector('.error, .success')) {
+      return;
+    }
     const activeElement = document.activeElement;
     if (activeElement === hashtagInput || activeElement === commentInput) {
       evt.stopPropagation();
@@ -27,17 +30,28 @@ function closeUploadForm() {
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   uploadForm.reset();
+  uploadInput.value = '';
+  hashtagInput.disabled = false;
+  commentInput.disabled = false;
+  hashtagInput.removeAttribute('disabled');
+  commentInput.removeAttribute('disabled');
   resetScale();
   resetEffect();
+  const errorElements = uploadForm.querySelectorAll('.pristine-error, .text__error');
+  errorElements.forEach((element) => element.remove());
 }
 
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
+  hashtagInput.disabled = false;
+  commentInput.disabled = false;
+  hashtagInput.removeAttribute('disabled');
+  commentInput.removeAttribute('disabled');
+  resetScale();
 };
 
-uploadInput.addEventListener('change', openUploadForm);
 uploadCancel.addEventListener('click', closeUploadForm);
 
-export { uploadForm, hashtagInput, commentInput, closeUploadForm };
+export { uploadForm, hashtagInput, commentInput, closeUploadForm, openUploadForm };
